@@ -1,6 +1,6 @@
 <h1 align="center"> Trilby - Code Completion Model Training Pipeline </h1>
 
-A comprehensive pipeline for training code completion models using LoRA fine-tuning on The Stack v2 dataset with Fill-in-the-Middle (FIM) capabilities.
+A pipeline for training code completion models using LoRA fine-tuning on The Stack v2 dataset with Fill-in-the-Middle (FIM) capabilities.
 
 ## Overview
 
@@ -111,4 +111,5 @@ python model_runner.py
 ## Cloud Training
 - [ ] Create Docker container
 - [ ] Fine tune cloud config files
+
 
