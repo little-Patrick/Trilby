@@ -2,6 +2,8 @@
 import json
 import time
 import torch
+import random, numpy as np
+from transformers import get_cosine_schedule_with_warmup
 from transformers.data import data_collator
 import matplotlib.pyplot as plt
 from transformers import (
@@ -34,16 +36,16 @@ bnb_config = BitsAndBytesConfig(
         bnb_4bit_use_bnb_nested_quant=True
     )
 
-    # Load model with quantization config
+    # Load Tokenizer
 model_name = config["model"]
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-# Ensure pad token is set correctly
+    # Ensure pad token is set correctly
 if tokenizer.pad_token is None:
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.pad_token_id = tokenizer.eos_token_id
 
-# Add FIM special tokens BEFORE loading the model
+    # Add FIM special tokens BEFORE loading the model
 fim_tokens = {
     "prefix": "<fim_prefix>",
     "middle": "<fim_middle>",
@@ -51,6 +53,7 @@ fim_tokens = {
 }
 num_added_tokens = tokenizer.add_tokens(list(fim_tokens.values()), special_tokens=True)
 
+    # Load Model
 model = AutoModelForCausalLM.from_pretrained(
         model_name,
         device_map="auto",
@@ -60,17 +63,18 @@ model = AutoModelForCausalLM.from_pretrained(
 torch.backends.cuda.matmul.allow_tf32 = False
 model.config.use_cache = False
 
-# Resize model embeddings to match tokenizer
+    # Resize model embeddings to match tokenizer
 if num_added_tokens > 0:
     model.resize_token_embeddings(len(tokenizer))
     print(f"Resized model embeddings to: {model.get_input_embeddings().num_embeddings}")
 
-train_dataset = ""
-eval_dataset = ""
-test_dataset = ""
 
 #%% Tokenize Dataset and Split Train/Test
 DS = config["dataset"]["database"]
+
+train_dataset = ""
+eval_dataset = ""
+test_dataset = ""
 
 try: 
     if DS == "bigcode/the-stack-v2-dedup":
@@ -110,9 +114,10 @@ model = get_peft_model(model, lora_config)
 #%% Model Training Args
 TA = config["training_args"]
 
-import random, numpy as np
+
 seed = config.get("seed", 42)
 random.seed(seed); np.random.seed(seed); torch.manual_seed(seed); 
+
 if torch.cuda.is_available(): torch.cuda.manual_seed_all(seed)
 
 training_args = TrainingArguments(
@@ -137,16 +142,16 @@ training_args = TrainingArguments(
         gradient_checkpointing_kwargs={"use_reentrant": False},
         report_to=[],
         lr_scheduler_type=TA.get("lr_scheduler_type", "cosine"),
-        warmup_steps=TA.get("warmup_steps", 0),
+        warmup_steps=TA["warmup_steps"],
         seed=seed,
 )
 
-# If dataset small adjust eval/save dynamically
-total_steps_est = (len(train_dataset) // (training_args.per_device_train_batch_size * training_args.gradient_accumulation_steps) + 1) * training_args.num_train_epochs
-if training_args.save_steps > total_steps_est:
-    print(f"Adjusting save/eval steps from {training_args.save_steps} to {max(10, total_steps_est//5)}")
-    training_args.save_steps = max(10, total_steps_est//5)
-    training_args.eval_steps = training_args.save_steps
+    # If dataset small adjust eval/save dynamically
+# total_steps_est = (len(train_dataset) // (training_args.per_device_train_batch_size * training_args.gradient_accumulation_steps) + 1) * training_args.num_train_epochs
+# if training_args.save_steps > total_steps_est:
+#     print(f"Adjusting save/eval steps from {training_args.save_steps} to {max(10, total_steps_est//5)}")
+#     training_args.save_steps = max(10, total_steps_est//5)
+#     training_args.eval_steps = training_args.save_steps
 
 
 #%% Trainer
@@ -162,7 +167,6 @@ early_stopping = EarlyStoppingCallback(
 )
 
     # Add learning rate scheduler callback
-from transformers import get_cosine_schedule_with_warmup
 
 trainer = Trainer(
     model=model,
@@ -181,12 +185,9 @@ torch.cuda.empty_cache()
     # Train model
 try:
     print("Starting training...")
-    # print(f"Total training steps: {len(train_dataset) // (training_args.per_device_train_batch_size * training_args.gradient_accumulation_steps) * training_args.num_train_epochs}")
-    
     train_result = trainer.train()
-    
     print("Training completed successfully!")
-    
+
 except KeyboardInterrupt:
     print("Training interrupted by user")
     print("Saving current model state...")

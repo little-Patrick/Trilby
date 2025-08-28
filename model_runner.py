@@ -68,7 +68,7 @@ def create_fim_prompt(prefix, suffix=""):
 
 def main():
     # Path to your trained adapter
-    adapter_path = "./training/TinyLlama/Python/python_trilby"
+    adapter_path = "./adapters/TinyLlama/Python/python_trilby"
     
     try:
         model, tokenizer = load_model_and_tokenizer(adapter_path)
