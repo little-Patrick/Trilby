@@ -56,7 +56,7 @@ python TrilbyTrainer.py
 python model_runner.py
 ```
 
-## 💻 Hardware Requirements
+## Hardware Requirements
 
 | GPU Memory | Recommended Settings |
 |------------|---------------------|
@@ -64,7 +64,7 @@ python model_runner.py
 | 8GB (RTX 3070) | batch_size=2, 4-bit quantization |
 | 12GB+ (RTX 3080+) | batch_size=4+, 8-bit quantization |
 
-## 📊 Training Features
+## Training Features
 
 ### Fill-in-the-Middle (FIM)
 - Trains models to complete code in the middle of existing context
@@ -81,7 +81,7 @@ python model_runner.py
 - Enables training large models on consumer hardware
 - Gradient checkpointing for further memory optimization
 
-## 📈 Pipeline Roadmap
+## Pipeline Roadmap
 - [x] Basic training pipeline with LoRA
 - [ ] Fine tune FIM Tokenization
 - [ ] Fine tune data preparation
