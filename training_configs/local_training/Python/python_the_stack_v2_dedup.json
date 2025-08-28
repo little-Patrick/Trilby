@@ -1,0 +1,63 @@
+{
+  "language": "Python",
+  "model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+  "save": "./training/TinyLlama/Python/python_trilby",
+  "dataset": {
+    "database": "bigcode/the-stack-v2-dedup",
+    "data_dir": "Python",
+    "split": "train[:1000]",
+    "streaming": false
+  },
+  "adapter": {
+    "r": 8,
+    "lora_alpha": 16,
+    "target_modules": ["q_proj","k_proj","v_proj","o_proj"],
+    "lora_dropout": 0.05,
+    "bias": "none"
+  },
+  "data_prep": {
+    "fim_ratio": 0.5,
+    "num_samples": 1000,
+    "max_length": 256,
+    "truncation": true,
+    "padding": true,
+    "test_size": 0.1,
+    "num_proc": 2,
+    "too_short": 20,
+    "too_long": 15000
+  },
+  "early_stopping": {
+    "patience": 8,
+    "threshold": 0.0005
+  },
+  "training_args": {
+    "output_dir": "./training/checkpoints/Python",
+    "per_device_train_batch_size": 2,
+    "gradient_accumulation_steps": 8,
+    "learning_rate": 2e-4,
+    "num_train_epochs": 5,
+    "fp16": true,
+    "logging_steps": 10,
+
+    "evaluation_strategy": "steps",
+    "eval_steps": 100,
+    "eval_accumulation_steps": 1,
+
+    "save_strategy": "steps",
+    "save_steps": 100,
+    "save_total_limit": 3,
+
+    "metric_for_best_model": "eval_loss",
+    "load_best_model_at_end": true,
+    "greater_is_better": false,
+
+    "lr_scheduler_type": "cosine",
+    "warmup_ratio": 0.03,
+    "max_grad_norm": 1.0,
+
+    "dataloader_pin_memory": false,
+    "remove_unused_columns": true,
+    "gradient_checkpointing": true,
+    "report_to": []
+  }
+}

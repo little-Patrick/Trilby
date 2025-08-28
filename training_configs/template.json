@@ -1,0 +1,43 @@
+{
+  "language": ,
+  "save": ,
+  "dataset": {
+	"database": ,
+	"data_dir": 
+  },
+  "adapter": {
+    "r": ,
+    "lora_alpha": ,
+    "target_modules": ,
+    "lora_dropout": ,
+    "bias": 
+  },
+  "data_prep": {
+	"num_samples": ,
+	"max_length": 
+  },
+  "early_stopping": {
+	"patience": ,
+	"threshold": 
+
+  },
+  "training_args": {
+    "output_dir": ,
+    "per_device_train_batch_size": ,
+    "gradient_accumulation_steps": ,
+    "learning_rate": ,
+    "num_train_epochs": ,
+    "fp16": ,
+    "logging_steps": ,
+    "save_strategy": ,
+    "save_steps": ,
+    "save_total_limit": ,
+    "eval_strategy": ,
+    "eval_steps": ,
+    "metric_for_best_model": ,
+    "load_best_model_at_end": ,
+    "greater_is_better": ,
+    "dataloader_pin_memory": ,
+    "remove_unused_columns": 
+  }
+}
