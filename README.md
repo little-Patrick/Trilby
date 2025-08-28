@@ -1,10 +1,10 @@
-# Trilby - Code Completion Model Training Pipeline
+<h1 align="center"> Trilby - Code Completion Model Training Pipeline </h1>
 
 A comprehensive pipeline for training code completion models using LoRA fine-tuning on The Stack v2 dataset with Fill-in-the-Middle (FIM) capabilities.
 
 ## Overview
 
-Trilby is a modular training pipeline designed to fine-tune large language models for code completion tasks. It features:
+Trilby is a modular training pipeline designed to fine-tune small large language model adapters for code completion tasks. It features:
 
 - **Fill-in-the-Middle (FIM) Training**: Enables models to complete code in the middle of existing context
 - **LoRA Fine-tuning**: Memory-efficient training using Low-Rank Adaptation
@@ -18,7 +18,7 @@ Trilby is a modular training pipeline designed to fine-tune large language model
 
 - Python 3.8+
 - CUDA-capable GPU (6GB+ VRAM recommended)
-- AWS credentials (for The Stack v2 dataset access)
+- AWS credentials (If youw want to use bigcode's The Stack v2 dataset)
 
 ### Dependencies
 
@@ -36,11 +36,13 @@ export AWS_ACCESS_KEY_ID="your_access_key"
 export AWS_SECRET_ACCESS_KEY="your_secret_key"
 ```
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Configure Training
 
-Edit the configuration file at `training_configs/template.json`:
+    - Copy the configuration file at `training_configs/template.json`.
+    - Configure and tune parameters 
+
 
 ### 2. Train the Model
 
@@ -79,79 +81,34 @@ python model_runner.py
 - Enables training large models on consumer hardware
 - Gradient checkpointing for further memory optimization
 
-## 🎯 Usage Examples
-
-### Normal Code Completion
-```python
-# Input
-def calculate_fibonacci(n):
-
-# Generated Output
-    if n <= 1:
-        return n
-    return calculate_fibonacci(n-1) + calculate_fibonacci(n-2)
-```
-
-### Fill-in-the-Middle
-```python
-# Prefix
-def process_data(data):
-    cleaned_data = clean(data)
-
-# Suffix
-    return result
-
-# Generated Middle
-    processed = transform(cleaned_data)
-    result = validate(processed)
-```
-
-## 📈 Roadmap
-
-### Phase 1: Core Pipeline ✅
+## 📈 Pipeline Roadmap
 - [x] Basic training pipeline with LoRA
-- [x] FIM token integration
-- [x] The Stack v2 dataset support
-- [x] Quantized training (4-bit/8-bit)
-- [x] Interactive model runner
+- [ ] Fine tune FIM Tokenization
+- [ ] Fine tune data preparation
+    - [ ] Test different data sources
+    - [ ] Better data filtering
+    - [ ] Fim ratio
+- [ ] Expand pipeline to use different base models
+    - Starting Base Models:
+        - [x] Llama
+        - [ ] Phi
+        - [ ] Qwen
+        - [ ] DeepSeek R1
+        - [ ] NanoGPT and DistilGPT
 
-### Phase 2: Enhanced Training
-- [ ] Multi-language support (JavaScript, Java, Go, etc.)
-- [ ] Advanced data filtering and preprocessing
-- [ ] Sequence packing for better GPU utilization
-- [ ] Mixed precision training optimization
-- [ ] Distributed training support
+## Training Roadmap
 
-### Phase 3: Evaluation & Metrics
-- [ ] Code completion benchmarks (HumanEval, MBPP)
-- [ ] FIM-specific evaluation metrics
-- [ ] Perplexity and accuracy tracking
-- [ ] A/B testing framework for model comparison
+### Local Training
+- [x] Train locally to test pipeline
+- [ ] Train multiple language adapters
+    - Starting with:
+    - [x] Python
+    - [ ] Javascript
+    - [ ] Go
+    - [ ] Bash/Zsh
+    - [ ] SQL
 
-### Phase 4: Production Features
-- [ ] Model serving API (FastAPI/Flask)
-- [ ] VSCode extension integration
-- [ ] Batch inference optimization
-- [ ] Model quantization for deployment
-- [ ] Docker containerization
+## Cloud Training
+- [ ] Create Docker container
+- [ ] Fine tune cloud config files
 
-### Phase 5: Advanced Capabilities
-- [ ] Multi-modal code completion (code + comments)
-- [ ] Repository-level context awareness
-- [ ] Code explanation and documentation generation
-- [ ] Vulnerability detection integration
-- [ ] Custom tokenizer training
-
-### Phase 6: Research & Innovation
-- [ ] Novel architecture experiments
-- [ ] Retrieval-augmented code completion
-- [ ] Code style adaptation
-- [ ] Cross-language code translation
-- [ ] Integration with code analysis tools
-
-
-- **The Stack v2**: BigCode for providing the training dataset
-- **LoRA**: Microsoft for the Low-Rank Adaptation technique
-- **BitsAndBytes**: For enabling quantized training
-- **Hugging Face**: For the transformers libr
-- **LLM-Workshop**: [Github Link](https://github.com/pacman100/LLM-Workshop/blob/main/personal_copilot/training/train.py)
